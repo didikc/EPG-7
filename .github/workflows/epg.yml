@@ -46,7 +46,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          mkdir -p epgs
 
       - name: Clone IPTV-ORG EPG tool
         run: git clone --depth 1 https://github.com/iptv-org/epg.git epg-tool
@@ -92,6 +91,17 @@ jobs:
               print("FATAL: epg.xml has zero channels or programmes. Refusing to commit.")
               sys.exit(1)
           PY
+
+      - name: Compress epg.xml to epg.xml.gz
+        run: |
+          gzip -c epg.xml > epg.xml.gz
+          ls -lh epg.xml.gz
+
+      - name: Upload epg.xml.gz Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: epg-output
+          path: epg.xml.gz
 
       - name: Generate list.txt Index
         run: |
