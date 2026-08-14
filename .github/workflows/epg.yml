@@ -11,6 +11,7 @@ on:
       - '.github/workflows/epg.yml'
       - 'list.xml'
       - 'generate_epg.py'
+      - 'translator.py'
 
 permissions:
   contents: write            # Allow committing changes
@@ -22,7 +23,7 @@ concurrency:
 jobs:
   build-epg:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
 
     steps:
       - name: Checkout Repository
@@ -46,6 +47,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install deep-translator langdetect lxml
 
       - name: Clone IPTV-ORG EPG tool
         run: git clone --depth 1 https://github.com/iptv-org/epg.git epg-tool
@@ -94,8 +96,7 @@ jobs:
 
       - name: Translate EPG to English (keep Indonesian unchanged)
         run: |
-          python3 translator.py epg.xml epg_translated.xml
-          mv epg_translated.xml epg.xml
+          python3 translator.py epg.xml epg.xml
 
       - name: Compress epg.xml to epg.xml.gz
         run: |
