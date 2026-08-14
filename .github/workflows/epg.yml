@@ -2,8 +2,8 @@ name: Generate EPG
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
-  workflow_dispatch:
+    - cron: '0 */6 * * *'   # Run every 6 hours
+  workflow_dispatch:         # Allow manual trigger
   push:
     branches:
       - main
@@ -13,10 +13,10 @@ on:
       - 'generate_epg.py'
 
 permissions:
-  contents: write
+  contents: write            # Allow committing changes
 
 concurrency:
-  group: git-write-lock
+  group: git-write-lock      # Prevent overlapping runs
   cancel-in-progress: false
 
 jobs:
@@ -91,6 +91,11 @@ jobs:
               print("FATAL: epg.xml has zero channels or programmes. Refusing to commit.")
               sys.exit(1)
           PY
+
+      - name: Translate EPG to English (keep Indonesian unchanged)
+        run: |
+          python3 translator.py epg.xml epg_translated.xml
+          mv epg_translated.xml epg.xml
 
       - name: Compress epg.xml to epg.xml.gz
         run: |
