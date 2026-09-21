@@ -72,7 +72,7 @@ def selective_translate(text: str, translator: GoogleTranslator, channel: str = 
             cache[key] = translated
 
         print(f"🌐 {lang} → EN | {text[:40]} -> {translated[:40]}")
-        time.sleep(0.03)  # avoid rate limits
+        time.sleep(0.25)  # avoid rate limits
         return translated
     except Exception as e:
         print(f"⚠️ Failed: {text[:40]} ({e})")
